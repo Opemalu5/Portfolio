@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> Lambretta </title>
+    <link rel="icon" type="image/png" href="images/logo-circle.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto+Slab:wght@600&display=swap" rel="stylesheet">
+
+
+  <style>
+   :root {
+  --red: #e10600;
+  --blue: #3c00ff;
+  --red-600: #c20400;
+  --black: #0b0b0c;
+  --white: #ffffff;
+  --muted: #e9e9ea;
+  --bg: #f6f7f8;
+  --shadow: 0 10px 30px rgba(0,0,0,.12);
+  /* Default series stripe (V) */
+  --stripe: linear-gradient(90deg, var(--red) 0 38%, var(--white) 38% 62%, var(--black) 62% 100%);
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: var(--black);
+}
+* { box-sizing: border-box; }
+
+/* NAV */
+.nav {
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  font-family: 'Poppins', sans-serif;
+}
+.nav .wrap {
+  max-width: 1200px;
+  margin: auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand logo */
+.nav .brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.nav .logo-img {
+  width: 40px;
+  margin-right: 8px;
+}
+.nav .wordmark-img {
+  height: 22px;
+}
+
+/* Links */
+.nav .links {
+  display: flex;
+  gap: 24px;
+}
+.nav .links a {
+  text-decoration: none;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  color: #0b0b0c;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+.nav .links a:hover {
+  color: #e10600;
+  transform: translateY(-2px);
+}
+
+/* CTA button */
+.nav .links .btn {
+  font-family: 'Roboto Slab', serif;
+  background: #e10600;
+  color: #fff !important;
+  padding: 8px 18px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.nav .links .btn:hover {
+  background: #c20400;
+  transform: scale(1.05);
+}
+.brand span { font-weight: 800; letter-spacing: .5px; font-size: 1.05rem; }
+.links { display: flex; align-items: center; gap: 1.25rem; }
+.links a { color: var(--black); text-decoration: none; font-weight: 700; }
+.btn {
+  display: inline-flex; align-items: center; gap: .6rem; padding: .8rem 1rem; border-radius: 14px;
+  font-weight: 800; border: 2px solid var(--red); background: var(--red); color: #fff;
+  box-shadow: 0 10px 20px rgba(225,6,0,.25); transition: transform .2s, box-shadow .2s, background .2s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 14px 28px rgba(225,6,0,.3); }
+.btn.ghost { background: transparent; color: var(--red); }
+
+/* LAYOUT */
+section { position: relative; padding: clamp(72px, 10vw, 120px) 0; }
+.wrap { width: min(1200px,92vw); margin: 0 auto; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: grid; place-items: center; padding-top: 90px; overflow: clip;
+  background: url('G/G350/1.jpg') center/cover no-repeat; position: relative;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.25); z-index: 0;
+}
+.hero-inner {
+  position: relative; z-index: 1; width: min(1200px,92vw); display: grid;
+  grid-template-columns: 1.2fr .9fr; gap: 40px; align-items: center;
+}
+.kicker { text-transform: uppercase; letter-spacing: .25em; color: var(--red); font-weight: 800; font-size: .8rem; }
+.title { font-size: clamp(2.2rem, 4.8vw, 5rem); line-height: 1.05; font-weight: 800; margin: .5rem 0 1rem; }
+.subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: #35363a; margin-bottom: 1.4rem; }
+.cta-row { display: flex; flex-wrap: wrap; gap: .8rem; }
+
+/* Animations */
+.hero-inner > div, .hero-inner .scooter-card, .scroll-indicator {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.hero.loaded .hero-inner > div,
+.hero.loaded .scooter-card,
+.hero.loaded .scroll-indicator {
+  opacity: 1; transform: translateY(0);
+}
+.hero.loaded .kicker { transition-delay: 0.2s; }
+.hero.loaded .title { transition-delay: 0.4s; }
+.hero.loaded .subtitle { transition-delay: 0.6s; }
+.hero.loaded .cta-row { transition-delay: 0.8s; }
+.hero.loaded .scooter-card { transition-delay: 1s; }
+.hero.loaded .scroll-indicator { transition-delay: 1.2s; }
+
+/* SPECS Animation */
+.specs .section-title, .specs .muted, .specs .spec {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.specs.loaded .section-title, .specs.loaded .muted, .specs.loaded .spec {
+  opacity: 1; transform: translateY(0);
+}
+.specs.loaded .section-title { transition-delay: 0.2s; }
+.specs.loaded .muted { transition-delay: 0.4s; }
+.specs.loaded .spec:nth-child(1) { transition-delay: 0.6s; }
+.specs.loaded .spec:nth-child(2) { transition-delay: 0.8s; }
+.specs.loaded .spec:nth-child(3) { transition-delay: 1s; }
+
+
+.tile:hover{
+  transform: scale(1.1);
+}
+/* GALLERY Animation */
+.gallery .section-title, .gallery .muted, .gallery .tile {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.gallery.loaded .section-title, .gallery.loaded .muted, .gallery.loaded .tile {
+  opacity: 1; transform: translateY(0);
+}
+.gallery.loaded .section-title { transition-delay: 0.2s; }
+.gallery.loaded .muted { transition-delay: 0.4s; }
+.gallery.loaded .tile:nth-child(1) { transition-delay: 0.6s; }
+.gallery.loaded .tile:nth-child(2) { transition-delay: 0.75s; }
+.gallery.loaded .tile:nth-child(3) { transition-delay: 0.9s; }
+.gallery.loaded .tile:nth-child(4) { transition-delay: 1.05s; }
+.gallery.loaded .tile:nth-child(5) { transition-delay: 1.2s; }
+.gallery.loaded .tile:nth-child(6) { transition-delay: 1.35s; }
+
+/* SCOOTER CARD */
+.scooter-card {
+  position: relative; aspect-ratio: 1/1; border-radius: 24px; overflow: hidden;
+  background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.15), transparent 60%),
+              radial-gradient(600px 600px at -10% 120%, rgba(0,0,0,.06), transparent 60%),
+              linear-gradient(180deg, #fff, #fafbff);
+  box-shadow: var(--shadow); isolate: isolate;
+}
+.scooter {
+  /* adjust to this zoom out (-)*/
+  position: absolute; inset: auto -3% -5% -1%; height: 85%; 
+  display: flex; justify-content: center; align-items: center;
+  transform: rotate(-6deg); filter: drop-shadow(0 20px 40px rgba(0,0,0,.2));
+}
+.scooter img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.stripe {
+  position: absolute; inset: 12% -10% auto -10%; height: 22%;
+  background: var(--stripe); border-radius: 20px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.12)); transform: rotate(-6deg);
+}
+.badge {
+  position: absolute; top: 14px; left: 14px;
+  background: var(--black); color: #fff; padding: .5rem .75rem;
+  border-radius: 999px; font-size: .8rem; font-weight: 800; letter-spacing: .04em;
+}
+.layer { position: absolute; inset: 0; pointer-events: none; }
+.layer.gloss {
+  background: radial-gradient(800px 500px at 70% -10%, rgba(255,255,255,.35), transparent 55%);
+  mix-blend-mode: screen;
+}
+
+/* Switcher */
+.switcher {
+  position: absolute; top: 14px; right: 14px; display: flex; gap: 6px;
+  background: rgba(255,255,255,.7); border: 1px solid rgba(0,0,0,.06);
+  padding: 6px; border-radius: 999px; box-shadow: var(--shadow);
+}
+.pill { border: 0; padding: .45rem .7rem; border-radius: 999px; font-weight: 800; cursor: pointer; letter-spacing: .06em; }
+.pill[aria-pressed="true"] { background: var(--red); color: #fff; }
+.pill[aria-pressed="false"] { background: #fff; color: #111; }
+
+
+.series-section { background: #fff; }
+.series-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.series-card {
+  position: relative; height: 320px; border-radius: 24px; overflow: hidden;
+  box-shadow: var(--shadow); cursor: pointer; transition: transform .3s ease, box-shadow .3s ease;
+  display: flex; flex-direction: column;
+}
+.series-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.series-card span {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.6); color: #fff; padding: 6px 12px; border-radius: 12px;
+  font-size: 14px; font-weight: bold;
+}
+.series-card:hover { transform: translateY(-8px) scale(1.05); box-shadow: 0 20px 50px rgba(0,0,0,.25); transition: transform 0.3s ease, box-shadow 0.3s ease;}
+#gallery-g { background: url('G/G350/Lambretta-sign-03.png') center/cover no-repeat; }
+#gallery-x { background: url('G/G350/X-series-text.png') center/cover no-repeat; }
+#gallery-v { background: url('G/G350/V-special-text.png') center/cover no-repeat; }
+/* #models {background: url('V/Monochrome-black.png') center/cover no-repeat;} */
+/* #specs {background: url('V/Monochrome-black.png')center/cover no-repeat;} */
+/* MODELS GRID */
+.section-title {
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  line-height: 1.15; margin: 0 0 1.2rem; font-weight: 800;
+}
+.muted { color: #50545a; font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+.card {
+  grid-column: span 4; background: #fff; border-radius: 18px; box-shadow: var(--shadow);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.card .img {
+  height: 240px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;
+}
+.card .img img {
+  width: 100%; height: 100%; object-fit: contain; display: block; padding: 10px;
+}
+.card .body { padding: 16px 18px; text-align: center; }
+.card h4 {
+  color: var(--red); margin: 6px 0 10px; font-size: 1.1rem; font-weight: 700;
+}
+.card .meta { font-size: 0.9rem; color: #555; margin-bottom: 8px; }
+.card .cta .chip {
+  display: inline-block; background: #f3f3f3; border-radius: 8px; padding: 4px 10px;
+  font-size: 0.85rem; color: #333;
+}
+
+/* MINI SCOOTER CARD DETAILS */
+.scooter-mini {
+  width: 76%; height: 70%; background: linear-gradient(180deg, #fdfdfd, #e6e9ee);
+  border-radius: 50% / 40% 40% 60% 60%;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.18)); transform: rotate(-8deg);
+}
+.flag {
+  position: absolute; top: 12px; left: 12px; background: var(--red); color: #fff;
+  padding: .35rem .6rem; border-radius: 999px; font-size: .75rem; font-weight: 800; letter-spacing: .04em;
+}
+.card .body { padding: 18px; display: flex; flex-direction: column; gap: .4rem; }
+.tag { font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; color: var(--red); font-weight: 800; }
+.card h4 { margin: .2rem 0; font-size: 1.1rem; }
+.card .meta { display: flex; gap: 10px; color: #6b6f76; font-size: .9rem; }
+.card .cta { margin-top: .6rem; display: flex; gap: .6rem; }
+.chip { padding: .4rem .65rem; border-radius: 999px; background: #f1f2f4; font-weight: 700; font-size: .8rem; }
+
+/* BANDS */
+.band { position: relative; padding: 110px 0; color: #fff; overflow: clip; }
+.band.red { background: linear-gradient(90deg, var(--red), var(--red-600)); }
+.band.black { background: linear-gradient(90deg, #0b0b0c, #1a1b1f); }
+.band .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
+
+/* SPECS */
+.specs { background: #fff; }
+.specs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.spec {
+  background: #0f1113; color: #fff; border-radius: 18px; padding: 20px;
+  box-shadow: var(--shadow); display: flex; gap: 14px; align-items: flex-start;
+}
+
+/* GALLERY */
+.gallery { background: linear-gradient(180deg, #fff, #f8f9fb); padding: 30px 0; }
+.grid-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.tile {
+  overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column;
+}
+
+
+.tile .image-box { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; max-height: 280px;}
+.tile .image-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;}
+.tile .image-box:hover img { transform: scale(1.1); }
+
+
+.tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.caption { text-align: center; font-size: 0.9rem; color: #444; margin-top: 6px; }
+.tile:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,.25);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.section-title { color: #7393B3; font-size: clamp(1.8rem, 2.5vw, 2.5rem); font-weight: 800; margin-bottom: 0.5rem; }
+.gallery .muted { color: #635d5ddb; }
+
+/* CTA & FOOTER */
+.cta { background: #fff; padding: 30px 0; margin: 0;}
+.panel {
+  background: #0f1113; color: #fff; border-radius: 22px; padding: 16px;
+  display: grid; grid-template-columns: 1.1fr .9fr; gap: 20px; align-items: center;
+  box-shadow: var(--shadow);
+}
+footer { background: var(--black); color: #cfd4db; padding: 40px 0; }
+footer .row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+footer a { color: #fff; text-decoration: none; font-weight: 700; }
+
+/* RESPONSIVE */
+@media (max-width: 980px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .series-grid { grid-template-columns: 1fr; }
+  .band .wrap, .panel { grid-template-columns: 1fr; }
+  .card { grid-column: span 6; }
+  .specs-grid { grid-template-columns: repeat(2, 1fr); }
+  .tile { grid-column: span 3; }
+  .tile.large { grid-column: span 3; }
+  .grid-gallery { grid-template-columns: repeat(2, 1fr); }
+  .tile .image-box { max-height: 220px; }
+  .branch-grid { grid-template-columns: repeat(2, 1fr); }
+  .series-card:hover {transform: translateY(-5px) scale(1.03); box-shadow: 0 15px 40px rgba(0,0,0,.2);}
+   #gallery-g, #gallery-x, #gallery-v { background-position: top center;}
+
+}
+@media (max-width: 640px) {
+  .links { display: none; }
+  .card { grid-column: span 12; }
+  .specs-grid { grid-template-columns: 1fr; }
+  .tile, .tile.large { grid-column: span 6; }
+  .grid-gallery { grid-template-columns: 1fr; }
+  .tile .image-box { max-height: 200px; }
+  .branch-grid { grid-template-columns: 1fr; }
+  .series-card:hover { transform: none; box-shadow: none;}
+  #gallery-g, #gallery-x, #gallery-v { background-size: contain; background-position: center; background-repeat: no-repeat;}
+
+}
+
+/* HERITAGE BAND */
+.band.heritage {
+  position: relative;
+  background: url("G/G350/Banner-G350-2-2048x709.jpg") center/cover no-repeat;
+  color: #fff; padding: 110px 0; overflow: hidden;
+}
+.band.heritage::before { content: ""; position: absolute; inset: 0; z-index: 0; }
+.band.heritage .wrap {
+  position: relative; z-index: 1; display: grid;
+  grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center;
+}
+
+/* BRAND LOGOS */
+.brand { display: flex; align-items: center; gap: 8px; }
+.logo-img { height: 40px; width: auto; }
+.wordmark-img { height: 20px; width: auto; }
+footer .logo-img { height: 32px; width: auto; }
+
+/* MODAL */
+.modal {
+  display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+  background: rgba(20,20,20,0.95); justify-content: center; align-items: center;
+}
+.modal-content {
+  max-width: 100%; max-height: 80%; border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6); animation: zoomIn 0.3s ease;
+}
+@keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-close {
+  position: absolute; top: 20px; right: 30px; color: #fff;
+  font-size: 2rem; font-weight: bold; cursor: pointer;
+}
+
+
+.branches { background: #f6f7f8; padding: 40px 0;}
+.branches .section-title { text-align: center; margin-bottom: 20px;}
+.branch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;}
+.branch-card {background: #fff;border-radius: 14px;padding: 18px; box-shadow: var(--shadow);}
+.branch-card h3 { margin: 0 0 10px; font-size: 1.2rem;font-weight: 700; color: #36454F	;}
+.branch-card p { margin: 6px 0; font-size: 0.95rem; color: #333;}
+.branch-card i { margin-right: 8px; color: #36454F;}
+
+
+#scrollTopBtn { position: fixed; bottom: 20px; right: 50px; z-index: 99; border: none; outline: none; background: #ff0000; color: rgb(255, 255, 255);
+ cursor: pointer; padding: 14px; border-radius: 50%; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: none;transition: all 0.3s ease;}
+#scrollTopBtn:hover { background: #ff5a5a;}
+#scrollTopBtn i { font-size: 20px;}
+
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="wrap">
+        <a class="brand" href="#home">
+            <!-- Logo symbol -->
+            <img src="images/logo-circle.png" alt="Lambretta Logo Symbol" class="logo-img">
+          
+            <!-- Wordmark -->
+            <img src="images/lam-logo-black.png" alt="Lambretta Wordmark" class="wordmark-img">
+          </a>
+                <div class="links">
+        <a href="#series">Series</a>
+        <a href="#models">Models</a>
+        <a href="#specs">Specs</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#cta">Book a Test Ride</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO with VXG switcher -->
+  <header class="hero" id="home">
+    <div class="hero-inner">
+      <div>
+        <div class="kicker" data-parallax data-speed="0.25">VXG SERIES</div>
+        <h1 class="title" data-parallax data-speed="0.15" style="color:#fff;">
+          V · X · G — <span style="color:#D50000DB;">Iconic</span> <span style="color:#D50000DB;">Lambretta.</span>
+        </h1>
+        
+        <p class="subtitle" data-parallax data-speed="0.12">
+          Three attitudes, one soul. Switch between V, X, and G to preview the vibe—colors, stripe, and motion adapt instantly.
+        </p>
+        <div class="cta-row">
+          <a href="#series" class="btn">Pick Your Series</a>
+          <a href="#gallery" class="btn ghost">See It In Action</a>
+        </div>
+      </div>
+      <div class="scooter-card" aria-hidden="true">
+        <div class="badge"><span id="seriesLabel">Series V</span></div>
+        <div class="switcher" role="group" aria-label="Model series">
+          <button class="pill" data-series="V" aria-pressed="true">V</button>
+          <button class="pill" data-series="X" aria-pressed="false">X</button>
+          <button class="pill" data-series="G" aria-pressed="false">G</button>
+        </div>
+        <div class="stripe" data-parallax data-speed="-0.12"></div>
+        <div class="layer gloss" data-parallax data-speed="-0.06"></div>
+  
+        <!-- ✅ HERE is where we load the image -->
+        <div class="scooter" data-parallax data-speed="0.18">
+          <a id="scooterLink"href="#gallery-v">
+            <img id="scooterImage" src="images/lambretta.jpg" alt="Lambretta Series V">
+          </a>
+        </div>
+      </div>
+    </div>
+  
+    <div class="scroll-indicator" style="position:absolute;left:50%;bottom:22px;transform:translateX(-50%);color:#8b8d92;font-weight:600;font-size:.8rem;display:flex;flex-direction:column;align-items:center;gap:.25rem">
+      <div class="mouse" style="width:18px;height:28px;border:2px solid #9aa0a6;border-radius:12px;position:relative"></div>
+      <span>Scroll</span>
+    </div>
+  </header>
+  
+
+  <!-- SERIES CARDS -->
+  <section id="series" class="series-section">
+    <div class="wrap">
+      <h2 class="section-title">Choose Your Series</h2>
+      <p class="muted">Tap a card to switch the hero preview. All sections use subtle parallax for depth.</p>
+      <div class="series-grid" style="margin-top:18px">
+  
+        <div class="series-card series-v" data-parallax data-speed="0.05" data-switch="V">
+          <img src="images/v/FULL LED LIGHTING SYSTEM.jpg" alt="Lambretta Series V" />
+          <span>Series V</span>
+        </div>
+  
+        <div class="series-card series-x" data-parallax data-speed="0.08" data-switch="X">
+          <img src="images/x/X300 Special/FULL LED LIGHTING1.jpg" alt="Lambretta Series X" />
+          <span>Series X</span>
+        </div>
+  
+        <div class="series-card series-g" data-parallax data-speed="0.12" >
+          <img src="images/g/G350II/REMASTER COLORS STYLE.jpg" alt="Lambretta Series G" />
+          <span>Series G</span>
+          
+        </div>
+  
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- MODELS -->
+  <section id="models">
+    <div class="wrap">
+      <h2 class="section-title">Featured Models</h2>
+      <p class="muted">Each model fuses Lambretta heritage with modern performance.</p>
+      <div class="grid" style="margin-top:22px">
+        <article class="card" data-parallax data-speed="0.08">
+          <div class="img">
+            <img src="images/v/Grotta Blue.png" alt="Lambretta V125 Special" />
+            <span class="flag">V</span>
+          </div>
+          <div class="body">
+            <!-- <span class="tag">V125</span> -->
+            <h4>V125 Special</h4>
+            <div class="meta"><span>124.7cc</span> • <span>CBS</span> • <span>LED DRL</span></div>
+            <div class="cta"><span class="chip">Blue / White</span></div>
+          </div>
+        </article>
+        <article class="card" data-parallax data-speed="0.04">
+          <div class="img">
+            <img src="images/x/X300 Special/White Latte Black.png" alt="Lambretta V125 Special" />
+            <span class="flag" style="background:var(--black)">X</span>
+          </div>
+          <div class="body">
+            <!-- <span class="tag">X200</span> -->
+            <h4>X200 Special</h4>
+            <div class="meta"><span>169cc</span> • <span>ABS</span> • <span>Liquid-cooled</span></div>
+            <div class="cta"><span class="chip">Black / Premium</span></div>
+          </div>
+        </article>
+        <article class="card" data-parallax data-speed="0.02">
+          <div class="img">
+            <img src="images/g/G350II/lambretta-G350-series2-red-1536x1052.png" alt="Lambretta V125 Special" />
+            <span class="flag" style="background:linear-gradient(90deg,var(--red),#ff3b2f)">G</span>
+          </div>
+          <div class="body">
+            <!-- <span class="tag">G350</span> -->
+            <h4>G350 Absolute</h4>
+            <div class="meta"><span>330cc</span> • <span>Dual ABS</span> • <span>Full metal body</span></div>
+            <div class="cta"><span class="chip">Red / White</span></div>
+          </div>
+        </article>
+      </div>
+
+
+
+      
+    </div>
+  </section>
+
+
+  <br>
+
+  
+  <!-- PARALLAX BAND: Red -->
+  <!-- <section class="band red" aria-label="Heritage">
+    <div class="wrap">
+      <div data-parallax data-speed="0.08"><h3>Born in Milano. Built for Today.</h3><p>From cobblestones to city boulevards—Lambretta carries the spirit of urban freedom.</p></div>
+      <div><div class="panelish" style="background:#fff; color:#0f1113; border-radius:18px; padding:18px; box-shadow: var(--shadow)" data-parallax data-speed="-0.06"><strong style="color:var(--red)">Did you know?</strong> The name comes from the Lambro river in Milan.</div></div>
+    </div>
+  </section> -->
+
+  <section class="band heritage" aria-label="Heritage">
+    <div class="wrap">
+      <div data-parallax data-speed="0.08">
+        <h3>Born in Milano. Built for Today.</h3>
+        <p>From cobblestones to city boulevards—Lambretta carries the spirit of urban freedom.</p>
+      </div>
+      <div>
+        <div class="panelish" 
+              style="background:transparent; color:#0f1113; padding:18px;" 
+              data-parallax data-speed="-0.06">
+          <strong style="color:var(--red)">Did you know?</strong> The name comes from the Lambro river in Milan.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- SPECS -->
+  <section id="specs" class="specs">
+    <div class="wrap">
+      <h2 class="section-title">Core Specifications</h2>
+      <p class="muted">Performance tuned for city agility and weekend escapes.</p>
+      <div class="specs-grid" style="margin-top:18px">
+        <div class="spec" data-parallax data-speed="0.04"><h5>Braking</h5><p>Front & rear disc, ABS/CBS options for confident stops.</p></div>
+        <div class="spec" data-parallax data-speed="0.02"><h5>Metal Body</h5><p>Aluminum & steel panels for durability with authentic feel.</p></div>
+        <div class="spec" data-parallax data-speed="0.0"><h5>LED Vision</h5><p>Full LED with DRL for visibility and that signature glare.</p></div>
+      </div>
+    </div>
+  </section>
+
+
+  
+
+  <!-- PARALLAX BAND: Black -->
+
+
+<section class="band black" aria-label="Performance" 
+         style="background: url('images/x/X300 sr/Lambretta-X300-SR-3-color-2048x1152.jpg') center/cover no-repeat; min-height:105vh; display:flex; align-items:center;">
+  <div class="wrap">
+    <div data-parallax data-speed="0.08">
+      <h3>Power that Glides</h3>
+      <p>Responsive acceleration, stable handling, and tuned suspension.</p>
+    </div>
+    <div>
+      <!-- <div class="panelish" 
+           style="background:transparent; color:#fff; padding:18px;" 
+           data-parallax data-speed="-0.05">
+        <strong style="color:var(--red)">Tip:</strong> Add a rear rack and windscreen for touring comfort.
+      </div> -->
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- GALLERY -->
+<!-- G SERIES GALLERY -->
+<section id="gallery-g" class="gallery"> 
+  <div class="wrap">
+    <h2 class="section-title">Series G Gallery</h2>
+    <p class="muted">Premium details of the G350</p>
+
+    <div class="grid-gallery">
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/g/G350/G350-final-shot-side-right-2048x1366.jpg" alt="G image 1">
+        </div>
+        <p class="caption">Classic Lambretta logo in bold styling.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/g/G350/Black.jpg" alt="G image 2">
+        </div>
+        <p class="caption">Modern LED rear light with signature design.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/g/G350/Red.jpg" alt="G image 3">
+        </div>
+        <p class="caption">Refined handlebar style with chrome finish.</p>
+      </div>
+    
+    </div>
+    <p class="muted">Premium details of the G350II </p>
+
+    <div class="grid-gallery">
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/g/G350II/lambretta-G350-series2-red-1536x1052.png" alt="G image 4">
+        </div>
+        <p class="caption">Advanced ABS braking with double arm-link system.</p>
+      </div>
+
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/g/G350II/Side Panel.jpg" alt="G image 5">
+        </div>
+        <p class="caption">Full metal side panel, classic yet robust.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/g/G350II/USB CHARGER.jpg" alt="G image 6">
+        </div>
+        <p class="caption">Convenient USB charger for modern rides.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+ 
+<!-- X SERIES GALLERY -->
+<section id="gallery-x" class="gallery"> 
+  <div class="wrap">
+    <h2 class="section-title">Series X Gallery</h2>
+    <p class="muted">Sporty and bold aesthetics of the X200</p>
+
+    <div class="grid-gallery">
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/x/X200/Cloudy Blue.png" alt="X image 1">
+        </div>
+        <p class="caption">Aggressive front stance with sporty lines.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/x/X200/Gemma White.png" alt="X image 2">
+        </div>
+        <p class="caption">Streamlined side profile for dynamic style.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/x/X200/LambrettaX125-Side-1-2048x1453.webp" alt="X image 3">
+        </div>
+        <p class="caption">Compact rear with modern tail lamp design.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/x/X200/Limoncello Yellow.png" alt="X image 4">
+        </div>
+        <p class="caption">Sport-inspired handlebar for agile control.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/x/X200/Scuro Grey.png" alt="X image 5">
+        </div>
+        <p class="caption">Durable alloy wheels with superior grip.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/x/X200/Super Black.png" alt="X image 6">
+        </div>
+        <p class="caption">Ergonomic seat designed for comfort.</p>
+      </div>
+    </div>
+
+    <p class="muted">Sporty and bold aesthetics of the X300 </p>
+    <div class="grid-gallery">
+      <div class="tile">
+          <div class="image-box">
+              <img src="images/x/X300/Black.jpg" alt="X image 7">
+          </div>
+          <p class="caption">Ergonomic seat designed for comfort.</p>
+
+      </div>
+      <div class="tile">
+          <div class="image-box">
+              <img src="images/x/X300/Green.jpg" alt="X image 9">
+          </div>
+          <p class="caption">Ergonomic seat designed for comfort.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+            <img src="images/x/X300/White.jpg" alt="X image 10">
+        </div>
+        <p class="caption">Ergonomic seat designed for comfort.</p>
+    </div>
+    <div class="tile">
+      <div class="image-box">
+          <img src="images/x/X300/Silver.jpg" alt="X image 11">
+      </div>
+      <p class="caption">Ergonomic seat designed for comfort.</p>
+    </div>
+    <div class="tile">
+      <div class="image-box">
+          <img src="images/x/X300/SMART KEYLESS IGNITION.jpg" alt="X image 12">
+      </div>
+      <p class="caption">Ergonomic seat designed for comfort.</p>
+    </div>
+    <div class="tile">
+      <div class="image-box">
+          <img src="images/x/X300/X300 FRONT BADGE.jpg" alt="X image 13">
+      </div>
+      <p class="caption">Ergonomic seat designed for comfort.</p>
+    </div>
+   
+  </div>
+
+  <p class="muted">Sporty and bold aesthetics of the X300 Special </p>
+  <div class="grid-gallery">
+    <div class="tile">
+      <div class="image-box">
+        <img src="images/x/X300 Special/Grey Scuro Black.png" alt="X image 1">
+      </div>
+      <p class="caption">Aggressive front stance with sporty lines.</p>
+    </div>
+    <div class="tile">
+      <div class="image-box">
+        <img src="images/x/X300 Special/Red Amaro White.png" alt="X image 1">
+      </div>
+      <p class="caption">Aggressive front stance with sporty lines.</p>
+    </div>
+    <div class="tile">
+      <div class="image-box">
+        <img src="images/x/X300 Special/Super Black.png" alt="X image 1">
+      </div>
+      <p class="caption">Aggressive front stance with sporty lines.</p>
+    </div>
+
+  </div>
+
+
+  </div>
+</section>
+
+<!-- V SERIES GALLERY -->
+<section id="gallery-v" class="gallery"> 
+  <div class="wrap">
+    <h2 class="section-title">Series V Gallery</h2>
+    <p class="muted">Classic but modern design of the V125.</p>
+
+    <div class="grid-gallery">
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/v/Siciliano Yellow.png" alt="V image 1">
+        </div>
+        <p class="caption">Timeless front design with retro appeal.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/v/Intenso Black.png" alt="V image 2">
+        </div>
+        <p class="caption">Elegant side profile with heritage cues.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/v/Perla White.png" alt="V image 3">
+        </div>
+        <p class="caption">Minimalist rear keeping it vintage.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/v/Grotta Blue.png" alt="V image 4">
+
+        </div>
+        <p class="caption">Classic-styled handlebar with modern touch.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/v/2.jpg" alt="V image 5">
+        </div>
+        <p class="caption">Robust wheels balancing retro and safety.</p>
+      </div>
+      <div class="tile">
+        <div class="image-box">
+          <img src="images/v/FULL LED LIGHTING SYSTEM.jpg" alt="V image 6">
+        </div>
+        <p class="caption">Comfortable seat with traditional character.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+  <!-- CTA -->
+  <section id="cta" class="cta">
+    <div class="wrap">
+      <div class="panel">
+        <div>
+          <h3 style="margin:0 0 .4rem">Ready to ride?</h3>
+          <p style="margin:0 0 1rem; color:#cfd4db">Book a test ride or request a quote. We'll get back within 24 hours.</p>
+          <div class="cta-actions" style="display:flex;gap:.8rem;flex-wrap:wrap">
+            <a href="#" class="btn">Book a Test Ride</a>
+            <a href="#" class="btn ghost">Request a Quote</a>
+          </div>
+        </div>
+        <form onsubmit="event.preventDefault(); alert('Thanks! We\'ll reach out.');" style="background:#0b0b0c; border:1px solid #1f2327; padding:18px; border-radius:16px; display:grid; gap:10px">
+          <label style="font-weight:700">Quick Contact</label>
+          <input required placeholder="Full name" style="padding:12px 14px; border-radius:12px; border:1px solid #2c3036; background:#111316; color:#fff" />
+          <input required type="tel" placeholder="Mobile Number" style="padding:12px 14px; border-radius:12px; border:1px solid #2c3036; background:#111316; color:#fff" />
+          <select required style="padding:12px 14px; border-radius:12px; border:1px solid #2c3036; background:#111316; color:#fff">
+            <option value="" disabled selected>Interested in</option>
+            <option>V125 Special</option>
+            <option>X200 Special</option>
+            <option>G350 Absolute</option>
+          </select>
+          <button class="btn" type="submit" style="justify-content:center">Submit</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <section id="branches" class="branches">
+    <div class="wrap">
+      <h2 class="section-title">Our Dealer/Branches</h2>
+      <div class="branch-grid">
+  
+        <!-- Branch 1 -->
+        <div class="branch-card">
+          <h3>Ropali Classics - Ortigas</h3>
+          <p><i class="fas fa-phone"></i> +63 912 345 6789</p>
+          <p><i class="fas fa-map-marker-alt"></i> MBC CLASSICROPALI PLAZA JM ESCRIVA DRIVE BRGY SAN ANTONIO PASIG CITY 1605 </p>
+        </div>
+  
+        <!-- Branch 2 -->
+        <div class="branch-card">
+          <h3>Ropali Classics - Naga Cebu</h3>
+          <p><i class="fas fa-phone"></i> +63 987 654 3210</p>
+          <p><i class="fas fa-map-marker-alt"></i> MBC NAGA CLASSICSZONE 1 ANR BUSINESS CENTER </p>
+        </div>
+  
+        <!-- Branch 3 -->
+        <div class="branch-card">
+          <h3>Ropali Classics - Pampanga </h3>
+          <p><i class="fas fa-phone"></i> +63 955 112 3344</p>
+          <p><i class="fas fa-map-marker-alt"></i> MBC ANGELES CLASSICSG/F 7&8 NEPO CENTER </p>
+        </div>
+  
+      </div>
+    </div>
+  </section>
+
+  
+  <button id="scrollTopBtn" title="Go to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+  
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <div class="brand" style="color:#fff">
+            <img src="images/logo-circle.png" alt="Lambretta Logo Symbol" class="logo-img">
+            <span style="color:#fff">Lambretta</span></div>
+        <div style="display:flex; gap:16px; flex-wrap:wrap">
+          <a href="#home">Home</a>
+          <a href="#series">Series</a>
+          <a href="#models">Models</a>
+          <a href="#specs">Specs</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#cta">Contact</a>
+        </div>
+      </div>
+      <p style="margin-top:12px; color:#a6adb7; font-size:.9rem">© <span id="year"></span> Lambretta. Conceptual demo site.</p>
+    </div>
+  </footer> 
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(2px);z-index:100">
+    <div class="frame" style="width:min(1000px,92vw);height:min(70vh,620px);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative">
+      <button class="close" aria-label="Close" onclick="toggleLightbox(false)" style="position:absolute;top:8px;right:8px;background:#000;color:#fff;border:none;border-radius:10px;padding:.5rem .7rem;font-weight:800;cursor:pointer">✕</button>
+      <div class="art" style="width:100%;height:100%;background: radial-gradient(1600px 800px at 30% -10%, rgba(225,6,0,.15), transparent 45%), linear-gradient(180deg, #fff, #eceef3);"></div>
+    </div>
+  </div>
+
+
+  <!-- Global Modal -->
+<div id="imgModal" class="modal">
+  <span class="modal-close">&times;</span>
+  <img class="modal-content" id="modalImg" alt="">
+  <div id="caption"></div>
+
+</div>
+
+
+
+
+
+  <script>
+      document.querySelectorAll('.series-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const target = document.getElementById('gallery');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+    // Navbar shrink
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('shrink', window.scrollY > 16);
+    document.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+    // Parallax engine
+    const parallaxItems = [...document.querySelectorAll('[data-parallax]')].map(el => ({ el, speed: parseFloat(el.getAttribute('data-speed') || '0.1') }));
+    let ticking = false;
+    function parallaxLoop() {
+      const y = window.scrollY;
+      parallaxItems.forEach(({ el, speed }) => { el.style.transform = `translate3d(0, ${Math.round(y * speed)}px, 0)`; });
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => { if (!ticking) { window.requestAnimationFrame(parallaxLoop); ticking = true; } }, { passive: true });
+    parallaxLoop();
+
+    // Series Switcher logic (V/X/G)
+    const body = document.body;
+    const seriesLabel = document.getElementById('seriesLabel');
+    body.setAttribute('data-model', 'V');
+    document.querySelectorAll('.switcher .pill').forEach(btn => {
+      btn.addEventListener('click', () => switchSeries(btn.dataset.series, btn));
+    });
+    document.querySelectorAll('[data-switch]').forEach(card => card.addEventListener('click', () => switchSeries(card.dataset.switch)));
+
+        function switchSeries(s, pressedBtn) { 
+      body.setAttribute('data-model', s);
+      seriesLabel.textContent = `Series ${s}`;
+
+      // Update dynamic stripe per series
+      if (s === 'V') document.documentElement.style.setProperty('--stripe', 'linear-gradient(90deg, var(--blue) 0 38%, var(--white) 38% 62%, var(--black) 62% 100%)');
+      if (s === 'X') document.documentElement.style.setProperty('--stripe', 'linear-gradient(90deg, var(--black) 0 100%, var(--white) 45% 70%, var(--red) 70% 100%)');
+      if (s === 'G') document.documentElement.style.setProperty('--stripe', 'linear-gradient(90deg, var(--white) 0 38%, var(--red) 35% 70%, var(--black) 70% 100%)');
+
+      // Update image based on series
+      const scooterImage = document.getElementById('scooterImage');
+      if (s === 'V') scooterImage.src = "images/v/Grotta Blue.png";
+      if (s === 'X') scooterImage.src = "images/x/X300 Special/Super Black.png";
+      if (s === 'G') scooterImage.src = "images/g/G350II/lambretta-G350-series2-red-1536x1052.png";
+
+      const scooterLink = document.getElementById('scooterLink');
+
+          if (s === 'V') {
+            scooterImage.src = "images/v/Grotta Blue.png";
+            scooterLink.href = "#gallery-v";
+          }
+          if (s === 'X') {
+            scooterImage.src = "images/x/X300 Special/Super Black.png";
+            scooterLink.href = "#gallery-x";
+          }
+          if (s === 'G') {
+            scooterImage.src = "images/g/G350II/lambretta-G350-series2-red-1536x1052.png";
+            scooterLink.href = "#gallery-g";
+          }
+      // Toggle pressed state in hero pills
+      document.querySelectorAll('.switcher .pill').forEach(b => b.setAttribute('aria-pressed', String(b === pressedBtn)));
+
+      // Micro animation nudge
+      const scooter = document.querySelector('.scooter');
+      scooter.animate([
+        { transform:'translate3d(0,0,0) rotate(-6deg)' },
+        { transform:'translate3d(0,-6px,0) rotate(-4deg)' },
+        { transform:'translate3d(0,0,0) rotate(-6deg)'}
+      ], { duration: 420, easing: 'ease-out' });
+
+      // Smooth scroll to hero preview when choosing from series cards
+      if (pressedBtn === undefined) {
+        window.scrollTo({ top: document.getElementById('home').offsetTop - 60, behavior: 'smooth' });
+      }
+
+// Smooth scroll when clicking the scooter image link
+      document.getElementById('scooterLink').addEventListener('click', function (e) {
+        e.preventDefault(); // prevent instant jump
+
+        const targetId = this.getAttribute('href'); 
+        const targetSection = document.querySelector(targetId);
+
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+
+    }
+
+          const hero = document.querySelector('.hero');
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              hero.classList.add('loaded');
+              observer.unobserve(hero); // only animate once
+            }
+          });
+        },
+        { threshold: 0.3 } 
+      );
+
+      observer.observe(hero);
+
+
+
+    // Lightbox
+    const lb = document.getElementById('lightbox');
+    function toggleLightbox(show) { lb.style.display = show ? 'flex' : 'none'; }
+    document.querySelectorAll('[data-lightbox]').forEach(tile => tile.addEventListener('click', () => toggleLightbox(true)));
+    lb.addEventListener('click', e => { if (e.target === lb) toggleLightbox(false); });
+
+    // Animate specs section when visible
+      const specs = document.querySelector('.specs');
+      const specsObserver = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              specs.classList.add('loaded');
+              specsObserver.unobserve(specs); // only animate once
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+    specsObserver.observe(specs);
+
+
+    // Apply scroll animation to all gallery sections
+    document.querySelectorAll('.gallery').forEach(gallery => {
+      const galleryObserver = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              gallery.classList.add('loaded');
+              galleryObserver.unobserve(gallery); // animate once
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      galleryObserver.observe(gallery);
+    });
+
+
+
+    const modal = document.getElementById("imgModal");
+    const modalImg = document.getElementById("modalImg");
+    const closeBtn = document.querySelector(".modal-close");
+
+    // Attach click event to all gallery images
+    document.querySelectorAll(".grid-gallery img").forEach(img => {
+      img.addEventListener("click", () => {
+        modal.style.display = "flex";
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+      });
+    });
+
+    // Close modal
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    // Close on outside click
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+
+
+
+    // function observeOnce(selector, threshold=0.3) {
+    //   document.querySelectorAll(selector).forEach(el => {
+    //     const observer = new IntersectionObserver(entries =>{
+    //       if (entries[0].isIntersecting){
+    //         el.classList.add('loaded');
+    //         observer.unobserve(el);
+    //       }
+    //     }, {threshold});
+    //     observer.observe(el);
+        
+    //   });
+    // }
+
+
+    // observeOnce ('.hero', 0.3);
+    // observeOnce ('.specs', 0.3);
+    // observeOnce ('.gallery', 0.3);
+
+    // const lb = document.getElementById('lightbox');
+    // const toggleLightbox = show => lb.style.display =  show ? 'flex' : 'none';
+
+    // document.querySelectorAll('[data-lightbox]').forEach(tile =>title.addEventListener('click',() =>  toggeleLightbox(true)));
+
+    // lb.addEventListener('click',e => {
+    //   if (e.target===lb) toggleLightbox (false);
+    // }); 
+
+// Get button
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+    // Show button when scrolled down
+    window.onscroll = function () {
+      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        scrollTopBtn.style.display = "block";
+      } else {
+        scrollTopBtn.style.display = "none";
+      }
+    };
+
+    // Scroll to top when clicked
+    scrollTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+  </script>
+</body>
+</html>
