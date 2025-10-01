@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lambretta — VXG Parallax Site</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #e10600;
+      --red-600: #c20400;
+      --black: #0b0b0c;
+      --white: #ffffff;
+      --muted: #e9e9ea;
+      --bg: #f6f7f8;
+      --shadow: 0 10px 30px rgba(0,0,0,.12);
+
+      /* Default series stripe (V) */
+      --stripe: linear-gradient(90deg, var(--red) 0 38%, var(--white) 38% 62%, var(--black) 62% 100%);
+    }
+    body { margin:0; font-family:'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial; background: var(--bg); color: var(--black); }
+    * { box-sizing: border-box; }
+
+    /* NAV */
+    .nav { position: fixed; inset:0 0 auto 0; height:74px; z-index:60; display:flex; align-items:center; justify-content:center; backdrop-filter:saturate(150%) blur(8px); background: color-mix(in hsl, var(--white) 70%, transparent); border-bottom:1px solid rgba(0,0,0,.06); transition:height .3s ease, background .3s ease; }
+    .nav.shrink { height:62px; background: color-mix(in hsl, var(--white) 92%, transparent); }
+    .nav .wrap { width:min(1200px,92vw); display:flex; align-items:center; justify-content:space-between; }
+    .brand { display:flex; align-items:center; gap:.75rem; color:var(--black); text-decoration:none; }
+    .logo { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-weight:800; background:linear-gradient(135deg,var(--red),#ff3b2f); color:#fff; box-shadow: var(--shadow); }
+    .brand span { font-weight:800; letter-spacing:.5px; font-size:1.05rem; }
+    .links { display:flex; align-items:center; gap:1.25rem; }
+    .links a { color:var(--black); text-decoration:none; font-weight:700; }
+    .btn { display:inline-flex; align-items:center; gap:.6rem; padding:.8rem 1rem; border-radius:14px; font-weight:800; border:2px solid var(--red); background:var(--red); color:#fff; box-shadow:0 10px 20px rgba(225,6,0,.25); transition: transform .2s, box-shadow .2s, background .2s; }
+    .btn:hover { transform: translateY(-1px); box-shadow:0 14px 28px rgba(225,6,0,.3); }
+    .btn.ghost { background:transparent; color:var(--red); }
+
+    /* LAYOUT */
+    section { position:relative; padding: clamp(72px, 10vw, 120px) 0; }
+    .wrap { width:min(1200px,92vw); margin:0 auto; }
+
+    /* HERO */
+    .hero { min-height:100vh; display:grid; place-items:center; padding-top:90px; overflow:clip; background: linear-gradient(180deg,#fff,#f9f9fa 55%,#f1f2f4); }
+    .hero-inner { position:relative; width:min(1200px,92vw); display:grid; grid-template-columns: 1.2fr .9fr; gap:40px; align-items:center; }
+    .kicker { text-transform:uppercase; letter-spacing:.25em; color:var(--red); font-weight:800; font-size:.8rem; }
+    .title { font-size: clamp(2.2rem, 4.8vw, 5rem); line-height:1.05; font-weight:800; margin:.5rem 0 1rem; }
+    .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color:#35363a; margin-bottom:1.4rem; }
+    .cta-row { display:flex; flex-wrap:wrap; gap:.8rem; }
+
+    .scooter-card { position:relative; aspect-ratio:1/1; border-radius:24px; overflow:hidden; background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.15), transparent 60%), radial-gradient(600px 600px at -10% 120%, rgba(0,0,0,.06), transparent 60%), linear-gradient(180deg, #fff, #fafbff); box-shadow: var(--shadow); isolate:isolate; }
+    .scooter { position:absolute; inset:auto -10% -12% -10%; height:80%; background: conic-gradient(from 220deg at 60% 40%, #fff, #fff 30%, #e5e7eb 60%, #c6c7cb 75%, #fff); border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%; filter: drop-shadow(0 20px 40px rgba(0,0,0,.2)); transform: rotate(-6deg); }
+    .stripe { position:absolute; inset:12% -10% auto -10%; height:22%; background: var(--stripe); border-radius:20px; filter: drop-shadow(0 10px 20px rgba(0,0,0,.12)); transform: rotate(-6deg); }
+    .badge { position:absolute; top:14px; left:14px; background:var(--black); color:#fff; padding:.5rem .75rem; border-radius:999px; font-size:.8rem; font-weight:800; letter-spacing:.04em; }
+    .layer { position:absolute; inset:0; pointer-events:none; }
+    .layer.gloss { background: radial-gradient(800px 500px at 70% -10%, rgba(255,255,255,.35), transparent 55%); mix-blend-mode: screen; }
+
+    /* Switcher */
+    .switcher { position:absolute; top:14px; right:14px; display:flex; gap:6px; background: rgba(255,255,255,.7); border:1px solid rgba(0,0,0,.06); padding:6px; border-radius: 999px; box-shadow: var(--shadow); }
+    .pill { border:0; padding:.45rem .7rem; border-radius:999px; font-weight:800; cursor:pointer; letter-spacing:.06em; }
+    .pill[aria-pressed="true"] { background: var(--red); color:#fff; }
+    .pill[aria-pressed="false"] { background:#fff; color:#111; }
+
+    /* SERIES CARDS SECTION (V/X/G) */
+    .series-section { background:#fff; }
+    .series-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; }
+    .series-card { position:relative; height:320px; border-radius:24px; overflow:hidden; background: linear-gradient(135deg, #fff, #f3f4f7); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; font-size: clamp(2rem, 6vw, 4rem); font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:#fff; cursor:pointer; transition: transform .3s ease, box-shadow .3s ease; }
+    .series-card:hover { transform: translateY(-8px) scale(1.05); box-shadow: 0 20px 50px rgba(0,0,0,.25); }
+    .series-v { background: linear-gradient(135deg, var(--red), #ff3b2f); }
+    .series-x { background: linear-gradient(135deg, var(--black), #3a3b3f); }
+    .series-g { background: linear-gradient(135deg, #e8eaee, #cfd3da); color: var(--black); }
+
+    /* MODELS GRID */
+    .section-title { font-size: clamp(1.6rem, 3.2vw, 2.4rem); line-height:1.15; margin:0 0 1.2rem; font-weight:800; }
+    .muted { color:#50545a; font-weight:500; }
+    .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap:20px; }
+    .card { grid-column: span 4; background:#fff; border-radius:18px; overflow:hidden; box-shadow: var(--shadow); position: relative; isolation:isolate; }
+    .card .img { height:200px; background: linear-gradient(135deg, #fff, #f3f4f7); display:grid; place-items:center; position:relative; }
+    .scooter-mini { width:76%; height:70%; background: linear-gradient(180deg, #fdfdfd, #e6e9ee); border-radius: 50% / 40% 40% 60% 60%; filter: drop-shadow(0 10px 18px rgba(0,0,0,.18)); transform: rotate(-8deg); }
+    .flag { position:absolute; inset:auto 12px 12px auto; background:var(--red); color:#fff; padding:.35rem .6rem; border-radius:999px; font-size:.75rem; font-weight:800; letter-spacing:.04em; }
+    .card .body { padding:18px; display:flex; flex-direction:column; gap:.4rem; }
+    .tag { font-size:.75rem; text-transform:uppercase; letter-spacing:.12em; color:var(--red); font-weight:800; }
+    .card h4 { margin:.2rem 0; font-size:1.1rem; }
+    .card .meta { display:flex; gap:10px; color:#6b6f76; font-size:.9rem; }
+    .card .cta { margin-top:.6rem; display:flex; gap:.6rem; }
+    .chip { padding:.4rem .65rem; border-radius:999px; background:#f1f2f4; font-weight:700; font-size:.8rem; }
+
+    /* BANDS */
+    .band { position:relative; padding:110px 0; color:#fff; overflow:clip; }
+    .band.red { background: linear-gradient(90deg, var(--red), var(--red-600)); }
+    .band.black { background: linear-gradient(90deg, #0b0b0c, #1a1b1f); }
+    .band .wrap { display:grid; grid-template-columns: 1.1fr .9fr; gap:36px; align-items:center; }
+
+    /* SPECS */
+    .specs { background:#fff; }
+    .specs-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; }
+    .spec { background:#0f1113; color:#fff; border-radius:18px; padding:20px; box-shadow: var(--shadow); display:flex; gap:14px; align-items:flex-start; }
+
+    /* GALLERY */
+    .gallery { background: linear-gradient(180deg, #fff, #f8f9fb); }
+    .grid-gallery { display:grid; grid-template-columns: repeat(6, 1fr); gap:14px; }
+    .tile { grid-column: span 2; border-radius:16px; overflow:hidden; background:#fff; box-shadow: var(--shadow); height:190px; position:relative; }
+    .tile.large { grid-column: span 3; height:240px; }
+
+    /* CTA & FOOTER */
+    .cta { background:#fff; }
+    .panel { background:#0f1113; color:#fff; border-radius:22px; padding:26px; display:grid; grid-template-columns: 1.1fr .9fr; gap:20px; align-items:center; box-shadow: var(--shadow); }
+    footer { background:var(--black); color:#cfd4db; padding:40px 0; }
+    footer .row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    footer a { color:#fff; text-decoration:none; font-weight:700; }
+
+    /* RESPONSIVE */
+    @media (max-width: 980px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .series-grid { grid-template-columns: 1fr; }
+      .band .wrap, .panel { grid-template-columns: 1fr; }
+      .card { grid-column: span 6; }
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .tile { grid-column: span 3; }
+      .tile.large { grid-column: span 3; }
+    }
+    @media (max-width: 640px) {
+      .links { display:none; }
+      .card { grid-column: span 12; }
+      .specs-grid { grid-template-columns: 1fr; }
+      .tile, .tile.large { grid-column: span 6; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="wrap">
+      <a class="brand" href="#home"><div class="logo">L</div><span>Lambretta</span></a>
+      <div class="links">
+        <a href="#series">Series</a>
+        <a href="#models">Models</a>
+        <a href="#specs">Specs</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#cta" class="btn">Book a Test Ride</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO with VXG switcher -->
+  <header class="hero" id="home">
+    <div class="hero-inner">
+      <div>
+        <div class="kicker" data-parallax data-speed="0.25">VXG SERIES</div>
+        <h1 class="title" data-parallax data-speed="0.15">V · X · G — <span style="color:var(--red)">Iconic</span> Lambretta. Parallax in Motion.</h1>
+        <p class="subtitle" data-parallax data-speed="0.12">Three attitudes, one soul. Switch between V, X, and G to preview the vibe—colors, stripe, and motion adapt instantly.</p>
+        <div class="cta-row">
+          <a href="#series" class="btn">Pick Your Series</a>
+          <a href="#gallery" class="btn ghost">See It In Action</a>
+        </div>
+      </div>
+      <div class="scooter-card" aria-hidden="true">
+        <div class="badge"><span id="seriesLabel">Series V</span></div>
+        <div class="switcher" role="group" aria-label="Model series">
+          <button class="pill" data-series="V" aria-pressed="true">V</button>
+          <button class="pill" data-series="X" aria-pressed="false">X</button>
+          <button class="pill" data-series="G" aria-pressed="false">G</button>
+        </div>
+        <div class="stripe" data-parallax data-speed="-0.12"></div>
+        <div class="layer gloss" data-parallax data-speed="-0.06"></div>
+        <div class="scooter" data-parallax data-speed="0.18"></div>
+      </div>
+    </div>
+    <div class="scroll-indicator" style="position:absolute;left:50%;bottom:22px;transform:translateX(-50%);color:#8b8d92;font-weight:600;font-size:.8rem;display:flex;flex-direction:column;align-items:center;gap:.25rem">
+      <div class="mouse" style="width:18px;height:28px;border:2px solid #9aa0a6;border-radius:12px;position:relative"></div>
+      <span>Scroll</span>
+    </div>
+  </header>
+
+  <!-- SERIES CARDS -->
+  <section id="series" class="series-section">
+    <div class="wrap">
+      <h2 class="section-title">Choose Your Series</h2>
+      <p class="muted">Tap a card to switch the hero preview. All sections use subtle parallax for depth.</p>
+      <div class="series-grid" style="margin-top:18px">
+        <div class="series-card series-v" data-parallax data-speed="0.05" data-switch="V">V</div>
+        <div class="series-card series-x" data-parallax data-speed="0.08" data-switch="X">X</div>
+        <div class="series-card series-g" data-parallax data-speed="0.12" data-switch="G">G</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODELS -->
+  <section id="models">
+    <div class="wrap">
+      <h2 class="section-title">Featured Models</h2>
+      <p class="muted">Each model fuses Lambretta heritage with modern performance.</p>
+      <div class="grid" style="margin-top:22px">
+        <article class="card" data-parallax data-speed="0.08">
+          <div class="img">
+            <div class="scooter-mini"></div>
+            <span class="flag">V</span>
+          </div>
+          <div class="body">
+            <span class="tag">V125</span>
+            <h4>V125 Special</h4>
+            <div class="meta"><span>124.7cc</span> • <span>CBS</span> • <span>LED DRL</span></div>
+            <div class="cta"><span class="chip">Red / White</span><a href="#cta" class="btn" style="padding:.55rem .8rem; font-size:.9rem">Inquire</a></div>
+          </div>
+        </article>
+        <article class="card" data-parallax data-speed="0.04">
+          <div class="img">
+            <div class="scooter-mini"></div>
+            <span class="flag" style="background:var(--black)">X</span>
+          </div>
+          <div class="body">
+            <span class="tag">X200</span>
+            <h4>X200 Special</h4>
+            <div class="meta"><span>169cc</span> • <span>ABS</span> • <span>Liquid-cooled</span></div>
+            <div class="cta"><span class="chip">Black / Red</span><a href="#cta" class="btn" style="padding:.55rem .8rem; font-size:.9rem">Inquire</a></div>
+          </div>
+        </article>
+        <article class="card" data-parallax data-speed="0.02">
+          <div class="img">
+            <div class="scooter-mini"></div>
+            <span class="flag" style="background:linear-gradient(90deg,var(--red),#ff3b2f)">G</span>
+          </div>
+          <div class="body">
+            <span class="tag">G350</span>
+            <h4>G350 Absolute</h4>
+            <div class="meta"><span>330cc</span> • <span>Dual ABS</span> • <span>Full metal body</span></div>
+            <div class="cta"><span class="chip">Red / Black</span><a href="#cta" class="btn" style="padding:.55rem .8rem; font-size:.9rem">Inquire</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARALLAX BAND: Red -->
+  <section class="band red" aria-label="Heritage">
+    <div class="wrap">
+      <div data-parallax data-speed="0.08"><h3>Born in Milano. Built for Today.</h3><p>From cobblestones to city boulevards—Lambretta carries the spirit of urban freedom.</p></div>
+      <div><div class="panelish" style="background:#fff; color:#0f1113; border-radius:18px; padding:18px; box-shadow: var(--shadow)" data-parallax data-speed="-0.06"><strong style="color:var(--red)">Did you know?</strong> The name comes from the Lambro river in Milan.</div></div>
+    </div>
+  </section>
+
+  <!-- SPECS -->
+  <section id="specs" class="specs">
+    <div class="wrap">
+      <h2 class="section-title">Core Specifications</h2>
+      <p class="muted">Performance tuned for city agility and weekend escapes.</p>
+      <div class="specs-grid" style="margin-top:18px">
+        <div class="spec" data-parallax data-speed="0.04"><h5>Braking</h5><p>Front & rear disc, ABS/CBS options for confident stops.</p></div>
+        <div class="spec" data-parallax data-speed="0.02"><h5>Metal Body</h5><p>Aluminum & steel panels for durability with authentic feel.</p></div>
+        <div class="spec" data-parallax data-speed="0.0"><h5>LED Vision</h5><p>Full LED with DRL for visibility and that signature glare.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARALLAX BAND: Black -->
+  <section class="band black" aria-label="Performance">
+    <div class="wrap">
+      <div data-parallax data-speed="0.08"><h3>Power that Glides</h3><p>Responsive acceleration, stable handling, and tuned suspension.</p></div>
+      <div><div class="panelish" style="background:#fff; color:#0f1113; border-radius:18px; padding:18px; box-shadow: var(--shadow)" data-parallax data-speed="-0.05"><strong style="color:var(--red)">Tip:</strong> Add a rear rack and windscreen for touring comfort.</div></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="gallery">
+    <div class="wrap">
+      <h2 class="section-title">Gallery</h2>
+      <p class="muted">Abstract renders to echo the red / white / black soul.</p>
+      <div class="grid-gallery" style="margin-top:16px">
+        <div class="tile large" data-lightbox><div class="art" style="width:100%;height:100%;background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.18), transparent 60%), linear-gradient(180deg, #fff, #eceef3);" data-parallax data-speed="0.06"></div></div>
+        <div class="tile" data-lightbox><div class="art" style="width:100%;height:100%;background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.18), transparent 60%), linear-gradient(180deg, #fff, #eceef3);" data-parallax data-speed="0.04"></div></div>
+        <div class="tile" data-lightbox><div class="art" style="width:100%;height:100%;background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.18), transparent 60%), linear-gradient(180deg, #fff, #eceef3);" data-parallax data-speed="0.02"></div></div>
+        <div class="tile large" data-lightbox><div class="art" style="width:100%;height:100%;background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.18), transparent 60%), linear-gradient(180deg, #fff, #eceef3);" data-parallax data-speed="0.05"></div></div>
+        <div class="tile" data-lightbox><div class="art" style="width:100%;height:100%;background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.18), transparent 60%), linear-gradient(180deg, #fff, #eceef3);" data-parallax data-speed="0.03"></div></div>
+        <div class="tile" data-lightbox><div class="art" style="width:100%;height:100%;background: radial-gradient(1200px 600px at 80% 0%, rgba(225,6,0,.18), transparent 60%), linear-gradient(180deg, #fff, #eceef3);" data-parallax data-speed="0.01"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="cta">
+    <div class="wrap">
+      <div class="panel">
+        <div>
+          <h3 style="margin:0 0 .4rem">Ready to ride?</h3>
+          <p style="margin:0 0 1rem; color:#cfd4db">Book a test ride or request a quote. We'll get back within 24 hours.</p>
+          <div class="cta-actions" style="display:flex;gap:.8rem;flex-wrap:wrap">
+            <a href="#" class="btn">Book a Test Ride</a>
+            <a href="#" class="btn ghost">Request a Quote</a>
+          </div>
+        </div>
+        <form onsubmit="event.preventDefault(); alert('Thanks! We\'ll reach out.');" style="background:#0b0b0c; border:1px solid #1f2327; padding:18px; border-radius:16px; display:grid; gap:10px">
+          <label style="font-weight:700">Quick Contact</label>
+          <input required placeholder="Full name" style="padding:12px 14px; border-radius:12px; border:1px solid #2c3036; background:#111316; color:#fff" />
+          <input required type="email" placeholder="Email" style="padding:12px 14px; border-radius:12px; border:1px solid #2c3036; background:#111316; color:#fff" />
+          <select required style="padding:12px 14px; border-radius:12px; border:1px solid #2c3036; background:#111316; color:#fff">
+            <option value="" disabled selected>Interested in</option>
+            <option>V125 Special</option>
+            <option>X200 Special</option>
+            <option>G350 Absolute</option>
+          </select>
+          <button class="btn" type="submit" style="justify-content:center">Submit</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <div class="brand" style="color:#fff"><div class="logo" style="background:linear-gradient(135deg,var(--red),#ff3b2f)">L</div><span style="color:#fff">Lambretta</span></div>
+        <div style="display:flex; gap:16px; flex-wrap:wrap">
+          <a href="#home">Home</a>
+          <a href="#series">Series</a>
+          <a href="#models">Models</a>
+          <a href="#specs">Specs</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#cta">Contact</a>
+        </div>
+      </div>
+      <p style="margin-top:12px; color:#a6adb7; font-size:.9rem">© <span id="year"></span> Lambretta. Conceptual demo site.</p>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(2px);z-index:100">
+    <div class="frame" style="width:min(1000px,92vw);height:min(70vh,620px);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative">
+      <button class="close" aria-label="Close" onclick="toggleLightbox(false)" style="position:absolute;top:8px;right:8px;background:#000;color:#fff;border:none;border-radius:10px;padding:.5rem .7rem;font-weight:800;cursor:pointer">✕</button>
+      <div class="art" style="width:100%;height:100%;background: radial-gradient(1600px 800px at 30% -10%, rgba(225,6,0,.15), transparent 45%), linear-gradient(180deg, #fff, #eceef3);"></div>
+    </div>
+  </div>
+
+  <script>
+    // Navbar shrink
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('shrink', window.scrollY > 16);
+    document.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+    // Parallax engine
+    const parallaxItems = [...document.querySelectorAll('[data-parallax]')].map(el => ({ el, speed: parseFloat(el.getAttribute('data-speed') || '0.1') }));
+    let ticking = false;
+    function parallaxLoop() {
+      const y = window.scrollY;
+      parallaxItems.forEach(({ el, speed }) => { el.style.transform = `translate3d(0, ${Math.round(y * speed)}px, 0)`; });
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => { if (!ticking) { window.requestAnimationFrame(parallaxLoop); ticking = true; } }, { passive: true });
+    parallaxLoop();
+
+    // Series Switcher logic (V/X/G)
+    const body = document.body;
+    const seriesLabel = document.getElementById('seriesLabel');
+    body.setAttribute('data-model', 'V');
+    document.querySelectorAll('.switcher .pill').forEach(btn => {
+      btn.addEventListener('click', () => switchSeries(btn.dataset.series, btn));
+    });
+    document.querySelectorAll('[data-switch]').forEach(card => card.addEventListener('click', () => switchSeries(card.dataset.switch)));
+
+    function switchSeries(s, pressedBtn) {
+      body.setAttribute('data-model', s);
+      seriesLabel.textContent = `Series ${s}`;
+
+      // Update dynamic stripe per series
+      if (s === 'V') document.documentElement.style.setProperty('--stripe', 'linear-gradient(90deg, var(--red) 0 38%, var(--white) 38% 62%, var(--black) 62% 100%)');
+      if (s === 'X') document.documentElement.style.setProperty('--stripe', 'linear-gradient(90deg, var(--black) 0 45%, var(--white) 45% 70%, var(--red) 70% 100%)');
+      if (s === 'G') document.documentElement.style.setProperty('--stripe', 'linear-gradient(90deg, #a0a4aa 0 35%, var(--black) 35% 70%, var(--red) 70% 100%)');
+
+      // Toggle pressed state in hero pills
+      document.querySelectorAll('.switcher .pill').forEach(b => b.setAttribute('aria-pressed', String(b === pressedBtn)));
+
+      // Micro animation nudge
+      const scooter = document.querySelector('.scooter');
+      scooter.animate([
+        { transform:'translate3d(0,0,0) rotate(-6deg)' },
+        { transform:'translate3d(0,-6px,0) rotate(-4deg)' },
+        { transform:'translate3d(0,0,0) rotate(-6deg)'}
+      ], { duration: 420, easing: 'ease-out' });
+
+      // Smooth scroll to hero preview when choosing from series cards
+      if (pressedBtn === undefined) {
+        window.scrollTo({ top: document.getElementById('home').offsetTop - 60, behavior: 'smooth' });
+      }
+    }
+
+    // Lightbox
+    const lb = document.getElementById('lightbox');
+    function toggleLightbox(show) { lb.style.display = show ? 'flex' : 'none'; }
+    document.querySelectorAll('[data-lightbox]').forEach(tile => tile.addEventListener('click', () => toggleLightbox(true)));
+    lb.addEventListener('click', e => { if (e.target === lb) toggleLightbox(false); });
+
+    // Current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
